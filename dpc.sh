@@ -1,20 +1,16 @@
-#!/bin/bash
-
-# Ask the user to input their name using an AppleScript dialog
-USER_NAME=$(osascript <<EOF
+osascript <<EOF
 tell application "System Events"
-    set nameDialog to display dialog "Please enter your name:" default answer ""
-    set userName to text returned of nameDialog
+    activate
+    set userResponse to display dialog "Please enter your name:" default answer "" buttons {"OK"} default button "OK"
+    set userName to text returned of userResponse
 end tell
-return userName
-EOF
-)
 
-# If the user provided a name, open Safari with the specified URL
-if [ ! -z "$USER_NAME" ]; then
-    echo "Hello, $USER_NAME!"
-    open -a "Safari" "https://malav-dpc.github.io/Spoon-Knife/"
+if userName is not "" then
+    tell application "Safari"
+        open location "https://malav-dpc.github.io/Spoon-Knife/"
+        activate
+    end tell
 else
-    echo "No name entered. Exiting."
-    exit 1
-fi
+    display dialog "No name entered. Exiting."
+end if
+EOF
